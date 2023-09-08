@@ -29,7 +29,6 @@ coursesRouter.post('/', (req: Request, res: Response) => {
     res.status(201).send(createdCourse)
 })
 coursesRouter.put('/:id', (req:Request, res: Response) =>{
-    console.log(req.body.title)
     let foundCourse = db.courses.find(c => c.id === +req.params.id)
     if(!req.body.title) return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
     if(!foundCourse) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

@@ -4,6 +4,7 @@ import {productsRouter} from "./routes/products.router";
 import {addressesRouter} from "./routes/addresses.router";
 import {coursesRouter} from "./routes/courses.router";
 import {usersRouter} from "./routes/users.router";
+import {videosRouter} from "./routes/videos.router";
 
 export const app = express()
 const port = 3000
@@ -22,6 +23,7 @@ export const RoutePaths = {
     addresses: '/addresses',
     courses: '/courses',
     users: '/users',
+    videos: '/videos',
     __test__: '/__test__/data'
 }
 app.use(express.json())
@@ -29,16 +31,14 @@ app.use(express.json())
 
 app.get('/', (req: Request, res: Response) => {
     let string =
-        '<p>Hello Best Backend developer Ever!</p>' +
-        '<p>You can do it! Just do it!</p>' +
-        '<p>Simple as it is!</p>' +
-        '<p>You know you can do it!</p>'
+        '<p>Hello World!</p>'
     res.send(string)
 })
 app.use(RoutePaths.products, productsRouter)
 app.use(RoutePaths.addresses, addressesRouter)
 app.use(RoutePaths.courses, coursesRouter)
 app.use(RoutePaths.users, usersRouter)
+app.use(RoutePaths.videos, videosRouter)
 
 
 
@@ -47,6 +47,7 @@ app.use(RoutePaths.users, usersRouter)
 
 app.delete(RoutePaths.__test__, (req: Request, res: Response) => {
     db.courses = [];
+    db.videos = [];
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
