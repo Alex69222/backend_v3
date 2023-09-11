@@ -19,12 +19,13 @@ export const HTTP_STATUSES = {
     NOT_FOUND_404: 404
 }
 export const RoutePaths = {
+    prefix: '/api',
     products: '/products',
     addresses: '/addresses',
     courses: '/courses',
     users: '/users',
     videos: '/videos',
-    __test__: '/__test__/data'
+    __test__: '/testing/all-data'
 }
 app.use(express.json())
 
@@ -34,11 +35,11 @@ app.get('/', (req: Request, res: Response) => {
         '<p>Hello World!</p>'
     res.send(string)
 })
-app.use(RoutePaths.products, productsRouter)
-app.use(RoutePaths.addresses, addressesRouter)
-app.use(RoutePaths.courses, coursesRouter)
-app.use(RoutePaths.users, usersRouter)
-app.use(RoutePaths.videos, videosRouter)
+app.use(RoutePaths.prefix + RoutePaths.products, productsRouter)
+app.use(RoutePaths.prefix + RoutePaths.addresses, addressesRouter)
+app.use(RoutePaths.prefix + RoutePaths.courses, coursesRouter)
+app.use(RoutePaths.prefix + RoutePaths.users, usersRouter)
+app.use(RoutePaths.prefix + RoutePaths.videos, videosRouter)
 
 
 
