@@ -10,40 +10,40 @@ const validateVideo = (req: Request) => {
     const errorsMessages = []
     if (!req.body.title) errorsMessages.push({field: 'title', message: 'Video title is not provided'});
     if (req.body.title?.length > MAX_TITLE_LENGTH) errorsMessages.push({
-        field: 'title',
-        message: `Max title length is ${MAX_TITLE_LENGTH} symbols.`
+        message: `Max title length is ${MAX_TITLE_LENGTH} symbols.`,
+        field: 'title'
     });
     if (!req.body.author) errorsMessages.push({field: 'author', message: 'Video author is not provided'});
     if (req.body.author?.length > MAX_AUTHOR_LENGTH) errorsMessages.push({
-        field: 'author',
-        message: `Max author length is ${MAX_AUTHOR_LENGTH} symbols.`
+        message: `Max author length is ${MAX_AUTHOR_LENGTH} symbols.`,
+        field: 'author'
     });
     if (req.body.minAgeRestriction &&
         (typeof +req.body.minAgeRestriction !== "number" ||
             +req.body.minAgeRestriction < 1 ||
             +req.body.minAgeRestriction > 18)) errorsMessages.push({
+        message: 'minAgeRestriction should be null or a number between 1 and 18',
         field: 'minAgeRestriction',
-        message: 'minAgeRestriction should be null or a number between 1 and 18'
     });
     if (req.body.availableResolutions &&
         (!Array.isArray(req.body.availableResolutions) ||
             req.body.availableResolutions.length === 0 ||
             !req.body.availableResolutions.every((v: VideoResolutions) => Object.values(VideoResolutions).includes(v)))
     ) errorsMessages.push({
-        field: 'availableResolutions',
-        message: `Correct video resolutions are ${VideoResolutions.P144}, ${VideoResolutions.P240}, ${VideoResolutions.P360} and so on.`
+        message: `Correct video resolutions are ${VideoResolutions.P144}, ${VideoResolutions.P240}, ${VideoResolutions.P360} and so on.`,
+        field: 'availableResolutions'
     });
     if (req.body.createdAt && !isValidIsoString(req.body.createdAt)) errorsMessages.push({
+        message: 'Date should be provided in ISOString format.',
         field: 'createdAt',
-        message: 'Date should be provided in ISOString format.'
     });
     if (req.body.publicationDate && !isValidIsoString(req.body.publicationDate)) errorsMessages.push({
+        message: 'Date should be provided in ISOString format.',
         field: 'publicationDate',
-        message: 'Date should be provided in ISOString format.'
     });
     if (req.body.canBeDownloaded && typeof req.body.canBeDownloaded !== 'boolean') errorsMessages.push({
+        message: 'canBeDownloaded should be boolean.',
         field: 'canBeDownloaded',
-        message: 'canBeDownloaded should be boolean.'
     });
     return errorsMessages
 }
@@ -87,7 +87,7 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     video.availableResolutions = req.body.availableResolutions || video.availableResolutions;
     video.canBeDownloaded = req.body.canBeDownloaded || video.canBeDownloaded;
     video.minAgeRestriction = req.body.minAgeRestriction || video.minAgeRestriction;
-    video.publicationDate = req.body.propertyIsEnumerable || video.publicationDate;
+    video.publicationDate = req.body.publicationDate || video.publicationDate;
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
