@@ -26,11 +26,11 @@ export type VideoType = {
     id: number,
     title: string,
     author: string,
-    canBeDownloaded: boolean,
-    minAgeRestriction:  number | null,
-    createdAt: string,
-    publicationDate: string,
-    availableResolutions: VideoResolutions[] | null
+    canBeDownloaded?: boolean,
+    minAgeRestriction?:  number | null,
+    createdAt?: string,
+    publicationDate?: string,
+    availableResolutions?: VideoResolutions[] | null
 }
 export type DBType = {
     courses: CourseType[],
