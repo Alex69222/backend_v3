@@ -46,7 +46,7 @@ app.use(RoutePaths.prefix + RoutePaths.videos, videosRouter)
 
 
 
-app.delete(RoutePaths.__test__, (req: Request, res: Response) => {
+app.delete(RoutePaths.prefix + RoutePaths.__test__, (req: Request, res: Response) => {
     db.courses = [];
     db.videos = [];
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)

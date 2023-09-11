@@ -7,21 +7,21 @@ export const MAX_TITLE_LENGTH = 40;
 const MAX_AUTHOR_LENGTH = 20;
 export const videosRouter = Router({})
 const validateVideo = (req: Request) => {
-    const errorMessages = []
-    if (!req.body.title) errorMessages.push({field: 'title', message: 'Video title is not provided'});
-    if (req.body.title?.length > MAX_TITLE_LENGTH) errorMessages.push({
+    const errorsMessages = []
+    if (!req.body.title) errorsMessages.push({field: 'title', message: 'Video title is not provided'});
+    if (req.body.title?.length > MAX_TITLE_LENGTH) errorsMessages.push({
         field: 'title',
         message: `Max title length is ${MAX_TITLE_LENGTH} symbols.`
     });
-    if (!req.body.author) errorMessages.push({field: 'author', message: 'Video author is not provided'});
-    if (req.body.author?.length > MAX_AUTHOR_LENGTH) errorMessages.push({
+    if (!req.body.author) errorsMessages.push({field: 'author', message: 'Video author is not provided'});
+    if (req.body.author?.length > MAX_AUTHOR_LENGTH) errorsMessages.push({
         field: 'author',
         message: `Max author length is ${MAX_AUTHOR_LENGTH} symbols.`
     });
     if (req.body.minAgeRestriction &&
         (typeof +req.body.minAgeRestriction !== "number" ||
             +req.body.minAgeRestriction < 1 ||
-            +req.body.minAgeRestriction > 18)) errorMessages.push({
+            +req.body.minAgeRestriction > 18)) errorsMessages.push({
         field: 'minAgeRestriction',
         message: 'minAgeRestriction should be null or a number between 1 and 18'
     });
@@ -29,27 +29,27 @@ const validateVideo = (req: Request) => {
         (!Array.isArray(req.body.availableResolutions) ||
             req.body.availableResolutions.length === 0 ||
             !req.body.availableResolutions.every((v: VideoResolutions) => Object.values(VideoResolutions).includes(v)))
-    ) errorMessages.push({
+    ) errorsMessages.push({
         field: 'availableResolutions',
         message: `Correct video resolutions are ${VideoResolutions.P144}, ${VideoResolutions.P240}, ${VideoResolutions.P360} and so on.`
     });
-    if (req.body.createdAt && !isValidIsoString(req.body.createdAt)) errorMessages.push({
+    if (req.body.createdAt && !isValidIsoString(req.body.createdAt)) errorsMessages.push({
         field: 'createdAt',
         message: 'Date should be provided in ISOString format.'
     });
-    if (req.body.publicationDate && !isValidIsoString(req.body.publicationDate)) errorMessages.push({
+    if (req.body.publicationDate && !isValidIsoString(req.body.publicationDate)) errorsMessages.push({
         field: 'publicationDate',
         message: 'Date should be provided in ISOString format.'
     });
-    if (req.body.canBeDownloaded && typeof req.body.canBeDownloaded !== 'boolean') errorMessages.push({
+    if (req.body.canBeDownloaded && typeof req.body.canBeDownloaded !== 'boolean') errorsMessages.push({
         field: 'canBeDownloaded',
         message: 'canBeDownloaded should be boolean.'
     });
-    return errorMessages
+    return errorsMessages
 }
 videosRouter.post('/', (req: Request, res: Response) => {
-    const errorMessages = validateVideo(req)
-    if (errorMessages.length) return res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorMessages})
+    const errorsMessages = validateVideo(req)
+    if (errorsMessages.length) return res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorsMessages})
     const date = req.body.createdAt ? new Date(req.body.createdAt) : new Date()
     const date2 = req.body.createdAt ? new Date(req.body.createdAt) : new Date()
     date2.setDate(date2.getDate() + 1)
