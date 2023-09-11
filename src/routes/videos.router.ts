@@ -65,7 +65,7 @@ videosRouter.post('/', (req: Request, res: Response) => {
         availableResolutions: req.body.availableResolutions,
     }
     db.videos.push(newVideo)
-    res.status(HTTP_STATUSES.CREATED_201).send(newVideo)
+    res.status(HTTP_STATUSES.CREATED_201).json(newVideo)
 })
 
 videosRouter.get('/', (req: Request, res: Response) => {
@@ -80,8 +80,8 @@ videosRouter.get('/:id', (req: Request, res: Response) => {
 videosRouter.put('/:id', (req: Request, res: Response) => {
     let video = db.videos.find((v: VideoType) => v.id === +req.params.id)
     if (!video) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-    const errorMessages = validateVideo(req)
-    if (errorMessages.length) return res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorMessages})
+    const errorsMessages = validateVideo(req)
+    if (errorsMessages.length) return res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorsMessages})
     video.title = req.body.title;
     video.author = req.body.author;
     video.availableResolutions = req.body.availableResolutions || video.availableResolutions;
