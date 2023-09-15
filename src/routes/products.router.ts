@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import { HTTP_STATUSES} from "../index";
+import {HTTP_STATUSES} from "../app";
 let products = [{id: 1, title: 'tomato'}, {id: 2, title: 'orange'}]
 
 export const productsRouter = Router({})

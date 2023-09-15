@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import {db} from "../db/db";
-import { HTTP_STATUSES} from "../index";
+import {HTTP_STATUSES} from "../app";
 
 export const coursesRouter = Router({})
 

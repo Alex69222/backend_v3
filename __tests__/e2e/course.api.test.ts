@@ -1,8 +1,8 @@
 import request from 'supertest'
-import {app, HTTP_STATUSES, RoutePaths} from "../../src";
+import {HTTP_STATUSES, RoutePaths, startApp} from "../../src/app";
 import {CourseType} from "../../src/db/db";
 
-const getRequest = () => request(app)
+const getRequest = () => request(startApp())
 describe('/course', () => {
     beforeAll(async () => {
         await getRequest().delete(RoutePaths.__test__)
@@ -11,7 +11,7 @@ describe('/course', () => {
         await getRequest().get(RoutePaths.courses)
             .expect(HTTP_STATUSES.OK_200, [])
     });
-    it('should return 404 for not existing course', async () => {
+    it('should return 404 for not existing entity', async () => {
         await getRequest().get(`${RoutePaths.courses}/1`)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
     });
