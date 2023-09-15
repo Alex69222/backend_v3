@@ -1,84 +1,85 @@
 import request from 'supertest'
-import {app, HTTP_STATUSES} from "../../src";
-import e from "express";
+import {HTTP_STATUSES, RoutePaths, startApp} from "../../src/app";
+import {usersTestManager} from "./usersTestManager";
+import {CreateUserModel} from "../../src/features/users/models/CreateUserModel";
 
-const getRequest = () => request(app)
+const getRequest = () => request(startApp())
 describe('tests for /users', () => {
     beforeAll(async () => {
-        await getRequest().delete('/__test___/data')
+        await getRequest().delete(RoutePaths.__test__)
     })
     it('should return 200 and empty array', async () => {
-        await getRequest().get('/courses')
+        await getRequest().get(RoutePaths.users)
             .expect(HTTP_STATUSES.OK_200, [])
     });
-    it('should return 404 for not existing course', async () => {
-        await getRequest().get('/courses/1')
+    it('should return 404 for not existing entity', async () => {
+        await getRequest().get(`${RoutePaths.users}/1`)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
     });
-    it(`shouldn't create course with incorrect input data`, async () => {
-        await getRequest().post('/courses').send({title: ''})
+    it(`shouldn't create entity with incorrect input data`, async () => {
+        await getRequest().post(RoutePaths.users).send({userName: ''})
             .expect(HTTP_STATUSES.BAD_REQUEST_400)
 
-        await getRequest().get('/courses')
+        await getRequest().get(RoutePaths.users)
             .expect(HTTP_STATUSES.OK_200, [])
     })
-    let createdCourse1: { id: number, title: string };
-    it(`should create course with correct input data`, async () => {
-        const createResponse = await getRequest().post('/courses').send({title: 'new title'})
-            .expect(HTTP_STATUSES.CREATED_201)
-        createdCourse1 = createResponse.body
-        expect(createdCourse1).toEqual({id: expect.any(Number), title: 'new title', studentsCount: 0})
+    let createdEntity1: { id: number, userName: string };
+    it(`should create entity with correct input data`, async () => {
+        const data: CreateUserModel = {userName: 'new user'}
+        const createResponse = await usersTestManager.createUser(data)
+        createdEntity1 = createResponse.body
+        expect(createdEntity1).toEqual({id: expect.any(Number), userName: data.userName})
 
-        await getRequest().get('/courses')
-            .expect(HTTP_STATUSES.OK_200, [createdCourse1])
+        await getRequest().get(RoutePaths.users)
+            .expect(HTTP_STATUSES.OK_200, [createdEntity1])
     })
-    let createdCourse2: { id: number, title: string };
-    it(`should create one more course with correct input data`, async () => {
-        const createResponse = await getRequest().post('/courses').send({title: 'new title2'})
-            .expect(HTTP_STATUSES.CREATED_201)
-        createdCourse2 = createResponse.body
-        expect(createdCourse2).toEqual({id: expect.any(Number), title: 'new title2', studentsCount: 0})
+    let createdEntity2: { id: number, userName: string };
+    it(`should create one more entity with correct input data`, async () => {
+        const data2: CreateUserModel = { userName: 'new user2'}
+        const createResponse = await  usersTestManager.createUser(data2)
+        createdEntity2 = createResponse.body
+        expect(createdEntity2).toEqual({id: expect.any(Number), userName: data2.userName})
 
-        await getRequest().get('/courses')
-            .expect(HTTP_STATUSES.OK_200, [createdCourse1, createdCourse2])
+        await getRequest().get(RoutePaths.users)
+            .expect(HTTP_STATUSES.OK_200, [createdEntity1, createdEntity2])
     })
-    it(`shouldn't update course with incorrect input data`, async () => {
-        await getRequest().put(`/courses/${createdCourse1.id}`).send({title: ''})
+    it(`shouldn't update entity with incorrect input data`, async () => {
+        await getRequest().put(`${RoutePaths.users}/${createdEntity1.id}`).send({userName: ''})
             .expect(HTTP_STATUSES.BAD_REQUEST_400)
-        await getRequest().get(`/courses/${createdCourse1.id}`)
-            .expect(HTTP_STATUSES.OK_200, createdCourse1)
+        await getRequest().get(`${RoutePaths.users}/${createdEntity1.id}`)
+            .expect(HTTP_STATUSES.OK_200, createdEntity1)
 
     })
-    it(`shouldn't update  course that doesn't exist`, async () => {
-        await getRequest().put(`/courses/0`).send({title: 'title'})
+    it(`shouldn't update  entity that doesn't exist`, async () => {
+        await getRequest().put(`${RoutePaths.users}/0`).send({userName: 'title'})
             .expect(HTTP_STATUSES.NOT_FOUND_404)
     })
-    it(`should update course with correct input data`, async () => {
-        await getRequest().put(`/courses/${createdCourse1.id}`).send({title: 'new good title'})
+    it(`should update entity with correct input data`, async () => {
+        await getRequest().put(`${RoutePaths.users}/${createdEntity1.id}`).send({userName: 'new good user'})
             .expect(HTTP_STATUSES.NO_CONTENT_204)
 
-         await getRequest().get(`/courses/${createdCourse1.id}`)
-            .expect(HTTP_STATUSES.OK_200, {...createdCourse1, title: 'new good title'})
+         await getRequest().get(`${RoutePaths.users}/${createdEntity1.id}`)
+            .expect(HTTP_STATUSES.OK_200, {...createdEntity1, userName: 'new good user'})
 
-        await getRequest().get(`/courses/${createdCourse2.id}`)
-            .expect(HTTP_STATUSES.OK_200, createdCourse2)
+        await getRequest().get(`${RoutePaths.users}/${createdEntity2.id}`)
+            .expect(HTTP_STATUSES.OK_200, createdEntity2)
     })
 
-    it(`should delete both courses`, async () => {
+    it(`should delete both entities`, async () => {
 
-        await getRequest().delete(`/courses/${createdCourse1.id}`)
+        await getRequest().delete(`${RoutePaths.users}/${createdEntity1.id}`)
             .expect(HTTP_STATUSES.NO_CONTENT_204)
 
-        await getRequest().get(`/courses/${createdCourse1.id}`)
+        await getRequest().get(`${RoutePaths.users}/${createdEntity1.id}`)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
 
-        await getRequest().delete(`/courses/${createdCourse2.id}`)
+        await getRequest().delete(`${RoutePaths.users}/${createdEntity2.id}`)
             .expect(HTTP_STATUSES.NO_CONTENT_204)
 
-        await getRequest().get(`/courses/${createdCourse2.id}`)
+        await getRequest().get(`${RoutePaths.users}/${createdEntity2.id}`)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
 
-        await getRequest().get('/courses')
+        await getRequest().get(RoutePaths.users)
             .expect(HTTP_STATUSES.OK_200, [])
     })
 

@@ -1,13 +1,13 @@
 import {Request, Response, Router} from "express";
-import {db} from "../db/db";
-import { HTTP_STATUSES} from "../index";
+import {db} from "../../db/db";
+import {HTTP_STATUSES} from "../../app";
 
 export const usersRouter = Router({})
 
 usersRouter.get('/', (req:Request, res: Response) =>{
     let foundUsers = db.users
-    if(req.query.title){
-        foundUsers = foundUsers.filter(c => c.userName.indexOf(req.query.title as string) > -1)
+    if(req.query.userName){
+        foundUsers = foundUsers.filter(c => c.userName.indexOf(req.query.userName as string) > -1)
     }
     res.json(foundUsers)
 })
@@ -17,7 +17,7 @@ usersRouter.get('/:id', (req:Request, res: Response) =>{
     res.send(foundUser)
 })
 usersRouter.post('/', (req: Request, res: Response) => {
-    if(!req.body.title) return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+    if(!req.body.userName) return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
 
     const createdUser = {
         id: +(new Date()),

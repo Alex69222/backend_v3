@@ -1,11 +1,10 @@
 import {Request, Response, Router} from "express";
-import {db, VideoResolutions, VideoType} from "../db/db";
-import {HTTP_STATUSES} from "../index";
-import {isValidIsoString} from "../helpers/isValidIsoString/isValidIsoString";
+import {db, VideoResolutions, VideoType} from "../../db/db";
+import {isValidIsoString} from "../../helpers/isValidIsoString/isValidIsoString";
+import {HTTP_STATUSES} from "../../app";
 
 export const MAX_TITLE_LENGTH = 40;
 const MAX_AUTHOR_LENGTH = 20;
-export const videosRouter = Router({})
 const validateVideo = (req: Request) => {
     const errorsMessages = []
     if (!req.body.title) errorsMessages.push({field: 'title', message: 'Video title is not provided'});
@@ -47,6 +46,8 @@ const validateVideo = (req: Request) => {
     });
     return errorsMessages
 }
+export const videosRouter = Router({})
+
 videosRouter.post('/', (req: Request, res: Response) => {
     const errorsMessages = validateVideo(req)
     if (errorsMessages.length) return res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorsMessages})
