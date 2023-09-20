@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
-import {db} from "../db/db";
-import {HTTP_STATUSES} from "../app";
+import {db} from "../../db/db";
+import {HTTP_STATUSES} from "../../app";
 
 export const coursesRouter = Router({})
 
@@ -22,7 +22,7 @@ coursesRouter.post('/', (req: Request, res: Response) => {
     const createdCourse = {
         id: +(new Date()),
         title: req.body.title,
-        studentsCount: 0
+        usersCount: 0
     }
 
     db.courses.push(createdCourse)

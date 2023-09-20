@@ -1,6 +1,6 @@
 import request from 'supertest'
 import {HTTP_STATUSES, RoutePaths, startApp} from "../../src/app";
-import {usersTestManager} from "./usersTestManager";
+import {usersTestManager} from "../utils/usersTestManager";
 import {CreateUserModel} from "../../src/features/users/models/CreateUserModel";
 
 const getRequest = () => request(startApp())
@@ -17,18 +17,15 @@ describe('tests for /users', () => {
             .expect(HTTP_STATUSES.NOT_FOUND_404)
     });
     it(`shouldn't create entity with incorrect input data`, async () => {
-        await getRequest().post(RoutePaths.users).send({userName: ''})
-            .expect(HTTP_STATUSES.BAD_REQUEST_400)
-
+        await usersTestManager.createUser({userName: ''}, HTTP_STATUSES.BAD_REQUEST_400)
         await getRequest().get(RoutePaths.users)
             .expect(HTTP_STATUSES.OK_200, [])
     })
     let createdEntity1: { id: number, userName: string };
     it(`should create entity with correct input data`, async () => {
         const data: CreateUserModel = {userName: 'new user'}
-        const createResponse = await usersTestManager.createUser(data)
-        createdEntity1 = createResponse.body
-        expect(createdEntity1).toEqual({id: expect.any(Number), userName: data.userName})
+        const {response, createdEntity} = await usersTestManager.createUser(data, HTTP_STATUSES.CREATED_201)
+        createdEntity1 = createdEntity
 
         await getRequest().get(RoutePaths.users)
             .expect(HTTP_STATUSES.OK_200, [createdEntity1])
@@ -36,9 +33,8 @@ describe('tests for /users', () => {
     let createdEntity2: { id: number, userName: string };
     it(`should create one more entity with correct input data`, async () => {
         const data2: CreateUserModel = { userName: 'new user2'}
-        const createResponse = await  usersTestManager.createUser(data2)
-        createdEntity2 = createResponse.body
-        expect(createdEntity2).toEqual({id: expect.any(Number), userName: data2.userName})
+        const {response, createdEntity} = await  usersTestManager.createUser(data2)
+        createdEntity2 = createdEntity
 
         await getRequest().get(RoutePaths.users)
             .expect(HTTP_STATUSES.OK_200, [createdEntity1, createdEntity2])

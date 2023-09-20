@@ -5,10 +5,10 @@ export type UserType = {
 export type CourseType = {
     id: number,
     title: string,
-    studentsCount: number
+    usersCount: number
 }
-export type StudentCourseBinding = {
-    studentId: number,
+export type UserCourseBinding = {
+    userId: number,
     courseId: number,
     date: Date
 }
@@ -35,24 +35,24 @@ export type VideoType = {
 export type DBType = {
     courses: CourseType[],
     users: UserType[],
-    studentCourseBindings: StudentCourseBinding[],
+    userCourseBindings: UserCourseBinding[],
     videos: VideoType[]
 }
 export const db: DBType = {
     courses: [
-        {id: 1, title: 'front-end', studentsCount: 10},
-        {id: 2, title: 'back-end', studentsCount: 10},
-        {id: 3, title: 'automation qa', studentsCount: 10},
-        {id: 4, title: 'devops', studentsCount: 10},
+        {id: 1, title: 'front-end', usersCount: 10},
+        {id: 2, title: 'back-end', usersCount: 10},
+        {id: 3, title: 'automation qa', usersCount: 10},
+        {id: 4, title: 'devops', usersCount: 10},
     ],
     users: [
         {id:1, userName: 'dimych'},
         {id:2, userName: 'ivan'}
     ],
-    studentCourseBindings: [
-        {studentId: 1, courseId: 1, date: new Date(2022, 10, 1)},
-        {studentId: 1, courseId: 2, date: new Date(2022, 10, 1)},
-        {studentId: 2, courseId: 2, date: new Date(2022, 10, 1)},
+    userCourseBindings: [
+        { userId: 1, courseId: 1, date: new Date(2022, 10, 1)},
+        { userId: 1, courseId: 2, date: new Date(2022, 10, 1)},
+        { userId: 2, courseId: 2, date: new Date(2022, 10, 1)},
     ],
     videos: [
         {
